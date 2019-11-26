@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatisbb.dao.mybatisInterface"><!-- 类地址 -->
+<!-- 
+namespace:名称空间;指定为接口的全类名  don
+id：唯一标识
+resultType：返回值类型
+#{id}：从传递过来的参数中取出id值
+
+public Test getTestId(Integer id);
+查询语句中的id与接口中的方法明相同
+ -->
+ <!--resultMap 自定义数据库的命名规则  type为所需要命名的javabean id为唯一标识-->
+ <resultMap type="mybatisbb.ben.Test" id="tt">
+ <!--id主键的命名规则  column对应数据库字段  property javabean对应的属性名-->
+ <id column="i" property="id"/>
+ <!--result普通命名规则 column对应数据库字段   不做指定则自动封装 -->
+ <result column="oo" property="mingzi"/>
+ </resultMap>
+ 
+ <!-- <select id="getTestId" resultMap="tt">
+ select * from school where id = #{id}
+ </select> -->
+ 
+ <select id="getTestmh" resultType="mybatisbb.ben.Test">
+  SELECT * FROM `school` WHERE NAME LIKE #{str}
+ </select>
+ <resultMap type="mybatisbb.ben.Test" id="mm">
+  <id column="id" property="id"/>
+  <result column="name" property="name"/>
+  <result column="age" property="age"/>
+  <result column="sex" property="Sex"/>
+  <!-- <result column="depaid" property="depa"/> 不用进行处理 -->
+  <result column="bianhao" property="depa.id"/>
+  <result column="bumen" property="depa.name"/>
+ </resultMap>
+ <resultMap type="mybatisbb.ben.Test" id="mj">
+  <id column="id" property="id"/>
+  <result column="name" property="name"/>
+  <result column="age" property="age"/>
+  <result column="sex" property="Sex"/>
+  <!--resultMa中可以使用association嵌套  property关联属性  javaType关联的javabean-->
+  <association property="depa" javaType="mybatisbb.ben.department">
+  <id column="bianhao" property="id"/>
+  <result column="bumen" property="name"/>
+  </association>
+ </resultMap>
+ 
+ <select id="getTestId" resultMap="mj">
+  SELECT s.`id` id,s.`oo` NAME ,s.`age` age,s.`sex` sex, s.`department_id` depaid,d.`id` bianhao,d.`name` bumen FROM `school` s,`department` d WHERE s.`department_id`=d.`id` AND s.`department_id`=#{id}
+ </select>
+ <resultMap type="mybatisbb.ben.Test" id="mk">
+  <id column="id" property="id"/>
+  <result column="oo" property="name"/>
+  <result column="age" property="age"/>
+  <result column="sex" property="Sex"/>
+  <!--使用 association分步查询   property 关联对象  select sql语句xml所在的位置 column传入sql语句的值-->
+  <association property="depa" select="mybatisbb.dao.depamapper.getTestId" column="department_id"></association>
+ </resultMap>
+ <select id="getTeststop" resultMap="mk">
+ SELECT * FROM  `school`WHERE id=#{id}
+ </select>
+ 
+ <!-- public Test  getTestId(list<Integer> ids); 当传入参数为数组或者集合 mybatis有特殊处理 这时候map的key为集合或数组的小写  取值表达方式为 #{list[数组坐标]}-->
+ <!-- 少量参数需要传递时 可以使用 map -->
+ 	<select id="getTestMap" resultType="mybatisbb.ben.Test">
+ 		select * from school where id = #{id} and name=#{lastName}
+ 	</select>
+ <!--多个参数时 可以在mapper中使用注解的方式@Param("形参")  mybatis将数值特殊处理 转化成map 其中Param为key值 我们使用@Param 定义#{}将里面的值定义成我们需要的值 -->
+ 	<select id="getTestIdandlastName" resultType="mybatisbb.ben.Test">
+		select * from school where id = #{id} and name=#{lastName}
+	</select>
+	<!-- <select id="getTestId" resultType="mybatisbb.ben.Test" >resultType推荐使用类地址  databaseId选择数据库类型
+		  select * from school where id = #{id}
+	</select> -->
+	<!--mybatis支持主键自增  useGeneratedKeys使用主键自增策yue  keyProperty用来接收主键自增的值 -->
+	<insert id="addTest" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `school`(NAME,age,sex)
+			VALUE (#{name},#{age},#{sex});
+	</insert>
+	<update id="updaTest">
+	update school set name=#{name},age=#{age},sex=#{sex} where id=#{id}
+	</update>
+	<delete id="deleTest">
+	DELETE FROM `school` WHERE id=#{id}
+	</delete>
+	
+	
+	
+	
+	
+	
+	
+<!-- -->	
+	<select id="getTeststopa" resultType="mybatisbb.ben.Test">
+	SELECT * FROM `school` WHERE `department_id`=#{id}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	 
+</mapper>

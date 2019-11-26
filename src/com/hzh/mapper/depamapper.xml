@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatisbb.dao.depamapper">
+<cache type="org.mybatis.caches.ehcache.LoggingEhcache"></cache><!--二级缓存 -->
+<select id="getTestId" resultType="mybatisbb.ben.department">
+  SELECT * FROM `department` WHERE id=#{id}
+</select>
+<!-- 集合封装 -->
+<!--bianhao  bumeng         id     age  department_id  oo        -->
+<resultMap type="mybatisbb.ben.department" id="ml">
+<id column="bianhao" property="id"/>
+<result column="bumeng" property="name"/>
+<!--collection定义关联集合类型的封装   ofType集合的类型 -->
+<collection property="test" ofType="mybatisbb.ben.Test">
+   <id column="id" property="id"/>
+   <result column="age" property="age"/>
+   <result column="oo" property="name"/>
+</collection>
+</resultMap>
+<select id="getTestIdplus" resultMap="ml">
+SELECT  d.`id` bianhao,d.`name` bumeng,s.`id`,s.`age`,s.`oo` FROM `department` d
+LEFT JOIN `school` s ON d.`id`=s.`department_id`
+WHERE d.`id`=#{id}
+</select>
+
+<!--分段查询  -->
+<resultMap type="mybatisbb.ben.department" id="qw">
+<id column="bianhao" property="id"/>
+<result column="bumeng" property="name"/>
+<collection property="test" ofType="mybatisbb.ben.Test" select="mybatisbb.dao.mybatisInterface.getTeststopa" column="id"></collection>
+</resultMap>
+
+<select id="getTestaId" resultMap="qw">
+SELECT * FROM `department` WHERE id=#{id}
+</select>
+
+<insert id="adddepa">
+INSERT INTO `department` (id,NAME) VALUES
+<foreach collection="temp" item="tem" separator=",">
+(#{tem.id},#{tem.name})
+</foreach>
+</insert>
+<!-- <sql id=""  sql抽取重复语句 include配合sql使用 同时可以用property属性来添加参数  >
+<include refid=""></include>
+</sql> -->
+</mapper>

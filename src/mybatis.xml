@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!-- properties 引入外部配置    url磁盘路径    resource类路径   -->
+   <properties resource="jdbc.properties"/>
+   <!-- <settings> 
+   <setting >:用来设置每一个设置项
+   name：设置项名
+   value：设置项值   -->
+   <settings>
+   <setting name="mapUnderscoreToCamelCase" value="true"/>
+   <setting name="lazyLoadingEnabled" value="ture"/>
+    <setting name="aggressiveLazyLoading" value="false"/>
+   </settings>
+   <!--typeAliases 别名 不区分大小写  -->
+   <typeAliases>
+   <!-- <typeAlias type="mybatisbb.ben.Test" alias="emp"/>    typeAlias 单个起别名      type包所在地址 alias 所起的别名-->
+  <!--  <package name="mybatisbb.ben.Test"/> 批量起别名 默认小写 -->
+   </typeAliases>
+   <!--environments环境们（多种环境）   default 指定使用某种环境 -->
+	<environments default="development">
+	<!--environment配置一个具体环境信息：必须有两个标签 id是唯一标识   transactionManager事务管理器 type 事务源-->
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			
+			<!-- dataSource 环境源 type环境类型 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${classurl}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${name}" />
+				<property name="password" value="${password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<!-- 将我们写好的sql映射文件注册到全局配置文件中 -->
+	<!-- <databaseIdProvider type=""> --> <!-- 选择不同的数据库 -->
+	<!-- <property name="" value=""/> -->  <!-- 为不同的数据库取名 name为数据库表示 value为值 -->
+<!-- 	</databaseIdProvider> -->
+	<mappers>
+		<mapper resource="com/hzh/mapper/testmapper.xml" />	<!-- 类路径  url磁盘路径下 -->
+		<mapper resource="com/hzh/mapper/depamapper.xml"/>
+		<mapper resource="com/hzh/mapper/DepartmentDao.xml"/>
+		<!-- <mapper class="mybatisbb.dao.mybatismpperclass"/> --><!-- 一般用来注册基于注解的接口 -->
+		<!-- <package name=""/>批量注册 name填包路径 -->
+	</mappers>
+</configuration>
